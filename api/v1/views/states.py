@@ -30,12 +30,16 @@ def access_states():
         for state_obj in all_states_dict.values():
             all_states_list.append(state_obj.to_dict())
         return jsonify(all_states_list)
+
     if request.method == 'POST':
-        if request.get_json():
-            body = request.get_json()
+        body = request.get_json()
+        if body:
             if 'name' in body:
-                new_state_name = body['name']
-                new_state = State(name=new_state_name)
+                new_state_attrs = {}
+                for key, value in body.items():
+                    if key not in ['id', 'created_at', 'updated_at']:
+                        new_state_attrs[key] = value
+                new_state = State(**new_state_attrs)
                 new_state.save()
                 return jsonify(new_state.to_dict()), 201
             else:
@@ -73,16 +77,12 @@ def access_state_from_id(state_id):
 
         if request.method == 'PUT':
             updates_dict = {}
-            if request.get_json():
-                print("we have a request")
-                for k, v in request.get_json().items():
+            body = request.get_json()
+            if body:
+                for k, v in body.items():
                     if k not in ['id', 'created_at', 'updated_at']:
-                        state_obj.update(v)
-#                    print("looping over request items")
-#                    updates_dict[k] = v
-#                    print("our new dict is: {}".format(updates_dict))
-#                    state_obj.update("hello")
-#                    updates_dict = {}
+                        updates_dict[k] = v
+                state_obj.update(**updates_dict)
                 state_obj.save()
                 return jsonify(state_obj.to_dict())
             else:

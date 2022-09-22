@@ -32,7 +32,7 @@ def serve_users():
                 new_user_attrs = {}
                 for key, value in body.items():
                     if key not in ['id', 'created_at', 'updated_at']:
-                        new_user_attrs[key] = body[key]
+                        new_user_attrs[key] = value
                 new_user = User(**new_user_attrs)
                 new_user.save()
                 return jsonify(new_user.to_dict()), 201
@@ -77,7 +77,6 @@ def serve_user_from_id(user_id):
                 for k, v in body.items():
                     if k not in ['id', 'email', 'created_at', 'updated_at']:
                         updates_dict[k] = v
-                print(updates_dict)
                 user_obj.update(**updates_dict)
                 user_obj.save()
                 return jsonify(user_obj.to_dict())
