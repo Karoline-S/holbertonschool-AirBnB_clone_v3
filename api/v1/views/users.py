@@ -26,7 +26,6 @@ def serve_users():
         return jsonify(all_users_list)
 
     if request.method == 'POST':
-        # user_attrs = {'email': "", 'password': "", 'first_name': "", 'last_name': ""}
         body = request.get_json()
         if body:
             if 'email' in body and 'password' in body:
