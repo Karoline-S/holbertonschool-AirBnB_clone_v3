@@ -2,14 +2,8 @@
 """create a route /status on the object app_views that returns a JSON"""
 from api.v1.views import app_views
 from flask import abort, jsonify, request
-import models
 from models import storage
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
 from models.state import State
-from models.user import User
 
 
 @app_views.route('/states', methods=['GET', 'POST'], strict_slashes=False)
@@ -33,19 +27,19 @@ def access_states():
 
     if request.method == 'POST':
         body = request.get_json()
-        if body:
-            if 'name' in body:
-                new_state_attrs = {}
-                for key, value in body.items():
-                    if key not in ['id', 'created_at', 'updated_at']:
-                        new_state_attrs[key] = value
-                new_state = State(**new_state_attrs)
-                new_state.save()
-                return jsonify(new_state.to_dict()), 201
-            else:
-                abort(400, description="Missing name")
-        else:
+        if not body:
             abort(400, description="Not a JSON")
+
+        if 'name' in not body:
+            abort(400, description="Missing name")
+
+        new_state_attrs = {}
+        for key, value in body.items():
+            if key not in ['id', 'created_at', 'updated_at']:
+                new_state_attrs[key] = value
+        new_state = State(**new_state_attrs)
+        new_state.save()
+        return jsonify(new_state.to_dict()), 201
 
 
 @app_views.route('/states/<state_id>',
@@ -65,28 +59,26 @@ def access_state_from_id(state_id):
     ERROR HANDLING: throws a 404 error if state_id not found
     """
     state_obj = storage.get(State, state_id)
-    if state_obj:
-        if request.method == 'GET':
-            print(state_obj.to_dict())
-            return jsonify(state_obj.to_dict())
-
-        if request.method == 'DELETE':
-            storage.delete(state_obj)
-            models.storage.save()
-            return {}
-
-        if request.method == 'PUT':
-            updates_dict = {}
-            body = request.get_json()
-            if body:
-                for k, v in body.items():
-                    if k not in ['id', 'created_at', 'updated_at']:
-                        updates_dict[k] = v
-                state_obj.update(**updates_dict)
-                state_obj.save()
-                return jsonify(state_obj.to_dict())
-            else:
-                abort(400, description="Not a JSON")
-
-    else:
+    if not state_obj:
         abort(404)
+
+    if request.method == 'GET':
+        return jsonify(state_obj.to_dict())
+
+    if request.method == 'DELETE':
+        storage.delete(state_obj)
+        storage.save()
+        return {}
+
+    if request.method == 'PUT':
+        body = request.get_json()
+        if not body:
+            abort(400, description="Not a JSON")
+
+        updates_dict = {}
+        for k, v in body.items():
+            if k not in ['id', 'created_at', 'updated_at']:
+                updates_dict[k] = v
+        state_obj.update(**updates_dict)
+        state_obj.save()
+        return jsonify(state_obj.to_dict())
