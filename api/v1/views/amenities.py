@@ -11,8 +11,10 @@ def serve_amenities():
     """
     GET REQUEST: return json string containing all Amenity objects
     in storage
+
     POST REQUEST: creates a new Amenity from request and returns new
     object's dict in JSON string
+
     ERROR HANDLING: throws 400 error if 'name' key not in body response
     dict, or body response not a valid json
     """
@@ -47,10 +49,13 @@ def serve_amenity_from_id(amenity_id):
     """
     GET REQUEST: returns JSON string containing the amenity object
     correspondong to amenity_id
+
     DELETE REQUEST: deletes an amenity object with corresponding amenity_id
     from storage and returns an emtpy dict
+
     PUT REQUEST: updates an amenity object with corresponding amenity_id from
     storage and returns a dict containing updated object
+
     ERROR HANDLING: throws a 404 error if amenity_id not found
     """
     amenity_obj = storage.get(Amenity, amenity_id)
