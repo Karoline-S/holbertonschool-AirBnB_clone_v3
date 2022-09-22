@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-""" create a new view for City objects that handles all default                  RESTFul API actions """
+""" create a new view for City objects that handles all default
+ RESTFul API actions """
 from api.v1.views import app_views
 from flask import abort, jsonify, request
 import models
@@ -34,7 +35,8 @@ def place_get(place_id):
     return jsonify(place.to_dict())
 
 
-@app_views.route('/places/<place_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/places/<place_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def place_delete(place_id):
     """ Deletes a place object based on given id """
     place = storage.get(Place, place_id)
@@ -63,7 +65,7 @@ def places_post(city_id):
         user_id = storage.get(User, content['user_id'])
         if user_id is None:
             abort(404)
-        new_place = Place(name=content['name'],city_id=city_id,
+        new_place = Place(name=content['name'], city_id=city_id,
                           user_id=content['user_id'])
         new_place.save()
         return jsonify(new_place.to_dict()), 201
