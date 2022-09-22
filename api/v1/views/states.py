@@ -30,7 +30,7 @@ def access_states():
         if not body:
             abort(400, description="Not a JSON")
 
-        if 'name' in not body:
+        if 'name' not in body:
             abort(400, description="Missing name")
 
         new_state_attrs = {}
