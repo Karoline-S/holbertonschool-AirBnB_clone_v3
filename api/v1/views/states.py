@@ -7,7 +7,7 @@ from models.state import State
 
 
 @app_views.route('/states', methods=['GET', 'POST'], strict_slashes=False)
-def access_states():
+def serve_states():
     """
     GET REQUEST: return json string containing all State objects
     in storage
@@ -45,7 +45,7 @@ def access_states():
 @app_views.route('/states/<state_id>',
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
-def access_state_from_id(state_id):
+def serve_state_from_id(state_id):
     """
     GET REQUEST: returns JSON string containing the state object
     correspondong to state_id

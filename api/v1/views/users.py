@@ -27,21 +27,20 @@ def serve_users():
 
     if request.method == 'POST':
         body = request.get_json()
-        if body:
-            if 'email' in body and 'password' in body:
-                new_user_attrs = {}
-                for key, value in body.items():
-                    if key not in ['id', 'created_at', 'updated_at']:
-                        new_user_attrs[key] = value
-                new_user = User(**new_user_attrs)
-                new_user.save()
-                return jsonify(new_user.to_dict()), 201
-            elif 'email' not in body:
-                abort(400, description="Missing email")
-            else:
-                abort(400, description="Missing password")
-        else:
+        if not body:
             abort(400, description="Not a JSON")
+        if 'email' not in body:
+            abort(400, description="Missing email")
+        if 'password' not in body:
+            abort(400, description="Missing password")
+
+        new_user_attrs = {}
+        for key, value in body.items():
+            if key not in ['id', 'created_at', 'updated_at']:
+                new_user_attrs[key] = value
+        new_user = User(**new_user_attrs)
+        new_user.save()
+        return jsonify(new_user.to_dict()), 201
 
 
 @app_views.route('/users/<user_id>',
@@ -61,27 +60,26 @@ def serve_user_from_id(user_id):
     ERROR HANDLING: throws a 404 error if user_id not found
     """
     user_obj = storage.get(User, user_id)
-    if user_obj:
-        if request.method == 'GET':
-            return jsonify(user_obj.to_dict())
-
-        if request.method == 'DELETE':
-            storage.delete(user_obj)
-            storage.save()
-            return {}
-
-        if request.method == 'PUT':
-            updates_dict = {}
-            body = request.get_json()
-            if body:
-                for k, v in body.items():
-                    if k not in ['id', 'email', 'created_at', 'updated_at']:
-                        updates_dict[k] = v
-                user_obj.update(**updates_dict)
-                user_obj.save()
-                return jsonify(user_obj.to_dict())
-            else:
-                abort(400, description="Not a JSON")
-
-    else:
+    if not user_obj:
         abort(404)
+
+    if request.method == 'GET':
+        return jsonify(user_obj.to_dict())
+
+    if request.method == 'DELETE':
+        storage.delete(user_obj)
+        storage.save()
+        return {}
+
+    if request.method == 'PUT':
+        body = request.get_json()
+        if not body:
+            abort(400, description="Not a JSON")
+
+        updates_dict = {}
+        for k, v in body.items():
+            if k not in ['id', 'email', 'created_at', 'updated_at']:
+                updates_dict[k] = v
+        user_obj.update(**updates_dict)
+        user_obj.save()
+        return jsonify(user_obj.to_dict())
