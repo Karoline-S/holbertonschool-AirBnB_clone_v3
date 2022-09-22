@@ -74,12 +74,7 @@ class BaseModel:
         """delete the current instance from the storage"""
         models.storage.delete(self)
 
-    def update(self, new_name):
-        if new_name:
-            self.name = new_name
-        """if kwargs:
-            print("arrived in updates method")
-            for k, v in kwargs.items():
-                print(k)
-                print(v)
-                self.k = v"""
+    def update(self, **kwargs):
+        if kwargs:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
