@@ -47,8 +47,8 @@ def serve_amenity_from_id(amenity_id):
     GET REQUEST: returns JSON string containing the amenity object
     correspondong to amenity_id
 
-    DELETE REQUEST: deletes an amenity object with corresponding amenity_id from
-    storage and returns an emtpy dict
+    DELETE REQUEST: deletes an amenity object with corresponding amenity_id
+    from storage and returns an emtpy dict
 
     PUT REQUEST: updates an amenity object with corresponding amenity_id from
     storage and returns a dict containing updated object
