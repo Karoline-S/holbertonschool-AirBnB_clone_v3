@@ -27,19 +27,19 @@ def serve_amenities():
 
     if request.method == 'POST':
         body = request.get_json()
-        if body:
-            if 'name' in body:
-                new_amenity_attrs = {}
-                for key, value in body.items():
-                    if key not in ['id', 'created_at', 'udpated_at']:
-                        new_amenity_attrs[key] = body[key]
-                new_amenity = Amenity(**new_amenity_attrs)
-                new_amenity.save()
-                return jsonify(new_amenity.to_dict()), 201
-            else:
-                abort(400, description="Missing name")
-        else:
+        if not body:
             abort(400, description="Not a JSON")
+
+        if 'name' not in body:
+            abort(400, description="Missing name")
+
+        new_amenity_attrs = {}
+        for key, value in body.items():
+            if key not in ['id', 'created_at', 'udpated_at']:
+                new_amenity_attrs[key] = body[key]
+        new_amenity = Amenity(**new_amenity_attrs)
+        new_amenity.save()
+        return jsonify(new_amenity.to_dict()), 201
 
 
 @app_views.route('/amenities/<amenity_id>',
@@ -59,29 +59,26 @@ def serve_amenity_from_id(amenity_id):
     ERROR HANDLING: throws a 404 error if amenity_id not found
     """
     amenity_obj = storage.get(Amenity, amenity_id)
-    print(amenity_obj)
-    if amenity_obj:
-        if request.method == 'GET':
-            print(amenity_obj.to_dict())
-            return jsonify(amenity_obj.to_dict())
-
-        if request.method == 'DELETE':
-            storage.delete(amenity_obj)
-            storage.save()
-            return {}
-
-        if request.method == 'PUT':
-            updates_dict = {}
-            body = request.get_json()
-            if body:
-                for k, v in body.items():
-                    if k not in ['id', 'created_at', 'updated_at']:
-                        updates_dict[k] = v
-                amenity_obj.update(**updates_dict)
-                amenity_obj.save()
-                return jsonify(amenity_obj.to_dict())
-            else:
-                abort(400, description="Not a JSON")
-
-    else:
+    if not amenity_obj:
         abort(404)
+
+    if request.method == 'GET':
+        return jsonify(amenity_obj.to_dict())
+
+    if request.method == 'DELETE':
+        storage.delete(amenity_obj)
+        storage.save()
+        return {}
+
+    if request.method == 'PUT':
+        body = request.get_json()
+        if not body:
+            abort(400, description="Not a JSON")
+
+        updates_dict = {}
+        for k, v in body.items():
+            if k not in ['id', 'created_at', 'updated_at']:
+                updates_dict[k] = v
+        amenity_obj.update(**updates_dict)
+        amenity_obj.save()
+        return jsonify(amenity_obj.to_dict())
