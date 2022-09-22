@@ -41,22 +41,24 @@ def serve_reviews(place_id):
         body = request.get_json()
         if not body:
             abort(400, description="Not a JSON")
-        if 'user_id' in body and 'text' in body:
-            new_review_attrs = {}
-            for key, value in body.items():
-                if key not in ['id', 'created_at', 'updated_at']:
-                    new_review_attrs[key] = value
-            new_review_attrs['place_id'] = place_id
-            user = storage.get(User, new_review_attrs['user_id'])
-            if not user:
-                abort(404)
-            new_review = Review(**new_review_attrs)
-            new_review.save()
-            return jsonify(new_review.to_dict()), 201
-        elif 'user_id' not in body:
+        if 'user_id' not in body:
             abort(400, description="Missing user_id")
-        else:
+        if 'text' not in body:
             abort(400, description="Missing text")
+
+        new_review_attrs = {}
+        for key, value in body.items():
+            if key not in ['id', 'created_at', 'updated_at']:
+                new_review_attrs[key] = value
+        new_review_attrs['place_id'] = place_id
+
+        user = storage.get(User, new_review_attrs['user_id'])
+        if not user:
+            abort(404)
+
+        new_review = Review(**new_review_attrs)
+        new_review.save()
+        return jsonify(new_review.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>',
