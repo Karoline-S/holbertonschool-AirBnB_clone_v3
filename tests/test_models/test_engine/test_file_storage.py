@@ -120,9 +120,9 @@ class TestFileStorage(unittest.TestCase):
             Check get method
         '''
         new_o = State(name="Vic")
-        obj = models.storage.get("State", "1234")
+        obj = models.storage.get(State, 1234)
         self.assertIsNone(obj)
-        obj_t = models.storage.get("State", new_o.id)
+        obj_t = models.storage.get(State, new_o.id)
         self.assertIs(new_o, obj_t)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
@@ -132,6 +132,6 @@ class TestFileStorage(unittest.TestCase):
         '''
         all_count = models.storage.count()
         self.assertIsInstance(all_count, int)
-        state_count = models.storage.count("State")
+        state_count = models.storage.count(State)
         self.assertIsInstance(state_count, int)
         self.assertGreaterEqual(all_count, state_count)

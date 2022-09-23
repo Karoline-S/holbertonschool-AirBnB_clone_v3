@@ -93,9 +93,9 @@ class TestFileStorage(unittest.TestCase):
             check get method invalid id
         """
         new_o = State(name="Vic")
-        obj = models.storage.get("State", "1234")
+        obj = models.storage.get(State, 1234)
         self.assertIsNone(obj)
-        obj_t = models.storage.get("State", new_o.id)
+        obj_t = models.storage.get(State, new_o.id)
         self.assertIs(new_o, obj_t)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
