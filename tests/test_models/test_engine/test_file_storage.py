@@ -119,11 +119,12 @@ class TestFileStorage(unittest.TestCase):
         '''
             Check get method
         '''
-        new_o = State(name="Vic")
+        first_o = list(storage.all(State).values())[0]
         obj = models.storage.get(State, 1234)
         self.assertIsNone(obj)
-        obj_t = models.storage.get(State, new_o.id)
-        self.assertIs(new_o, obj_t)
+        first_state_id = list(storage.all(State).values())[0].id
+        first_state = storage.get(State, first_state_id))
+        self.assertIs(first_o, first_state)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_fs_storage_count(self):
