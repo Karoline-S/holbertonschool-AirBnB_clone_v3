@@ -97,7 +97,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertIsNone(obj)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test__get_valid_id(self):
+    def test_get_valid_id(self):
         '''
             Check get method valid id
         '''
