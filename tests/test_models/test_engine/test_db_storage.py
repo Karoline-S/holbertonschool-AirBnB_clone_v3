@@ -93,8 +93,12 @@ class TestFileStorage(unittest.TestCase):
             check get method invalid id
         """
         new_o = State(name="Vic")
+        new_o.save()
         obj = models.storage.get(State, 1234)
         self.assertIsNone(obj)
+        new_state = models.storage.get(State, new_o.id)
+        self.assertIs(new_o, new_state)
+        new_o.delete()
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):
@@ -106,3 +110,7 @@ class TestFileStorage(unittest.TestCase):
         state_count = models.storage.count(State)
         self.assertIsInstance(state_count, int)
         self.assertGreaterEqual(all_count, state_count)
+        new_o = State(name="Vic")
+        new_o.save()
+        new_count = models.storage.count()
+        self.assertEqual(state_count, new_count-1)
