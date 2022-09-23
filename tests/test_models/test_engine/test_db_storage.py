@@ -92,11 +92,11 @@ class TestFileStorage(unittest.TestCase):
         """
             check get method invalid id
         """
-        first_o = list(storage.all(State).values())[0]
+        first_o = list(models.storage.all(State).values())[0]
         obj = models.storage.get(State, 1234)
         self.assertIsNone(obj)
-        first_state_id = list(storage.all(State).values())[0].id
-        first_state = storage.get(State, first_state_id)
+        first_state_id = list(models.storage.all(State).values())[0].id
+        first_state = models.storage.get(State, first_state_id)
         self.assertIs(first_o, first_state)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
