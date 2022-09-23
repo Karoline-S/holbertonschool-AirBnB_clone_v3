@@ -103,8 +103,8 @@ class TestFileStorage(unittest.TestCase):
         '''
             Check total count
         '''
-        all_count = self.storage.count()
+        all_count = models.storage.count()
         self.assertIsInstance(all_count, int)
-        state_count = self.storage.count("State")
+        state_count = models.storage.count("State")
         self.assertIsInstance(state_count, int)
         self.assertGreaterEqual(all_count, state_count)
